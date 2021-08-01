@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+    <!-- 속성: 로그 파일을 적재할 디렉토리 경로 지정 -->
+    <property name="LOG_PATH" value="/var/log" />
+    <!-- 속성: 로그 파일 이름 지정 -->
+    <property name="CONSOLE_LOG_NAME" value="application-console" />
+    <!-- 속성: 로그 파일 이름 지정 -->
+    <property name="SERVICE_LOG_NAME" value="application-service" />
+
+    <!-- 로그 파일 출력 정책 설정 -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender"> <!-- CONSOLE 이라는 이름의 정책 설정 -->
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder" /> <!-- 로그이벤트가 기록되는 방식 지정 -->
+    </appender>
+
+    <!-- 로그 파일 출력 정책 설정 -->
+    <appender name="SERVICE" class="ch.qos.logback.core.rolling.RollingFileAppender"> <!-- FILE_JSON 이라는 이름의 정책 설정 -->
+        <file>${LOG_PATH}/${SERVICE_LOG_NAME}.log</file> <!-- 로그를 추가할 대상 파일명 지정 -->
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder" /> <!-- 로그이벤트가 기록되는 방식 지정 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy"> <!-- 로그 rollover 이벤트 지정 -->
+            <fileNamePattern>${SERVICE_LOG_NAME}.log.%d{yyyy-MM-dd}.%i</fileNamePattern> <!-- rollover시 아카이브 될 로그 파일의 패턴 정의 -->
+            <maxFileSize>10MB</maxFileSize> <!-- 아카이브 분할 기준 용량 지정 -->
+            <maxHistory>7</maxHistory> <!-- 아카이브에 저장할 로그 파일의 개수 지정. 단위는 일(Day). 지정한 일자가 지난 로그는 오래된 순서대로 제거된다. -->
+        </rollingPolicy>
+    </appender>
+
+    <!-- root logger 설정 -->
+    <root level="INFO"> <!-- INFO 모드로 설정 -->
+        <appender-ref ref="CONSOLE" /> <!-- "CONSOLE" Appender 연결 -->
+        <appender-ref ref="SERVICE" /> <!-- "SERVICE" Appender 연결 -->
+    </root>
+</configuration>
